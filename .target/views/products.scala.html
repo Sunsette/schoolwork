@@ -1,0 +1,66 @@
+@* products Template File *@
+@(param: Any)
+<head>
+	<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+</head>
+	
+	 <ul id="products"></ul>
+    
+    <hr>
+    
+    <button id="create-new-product">Create new product</button>
+    
+    <script>
+    	function loadListOfStudents(){
+			$('#products').empty();
+        	
+			$.get('/products', function(products){
+				$.each(products, function(arrayIndex, product){
+					$('<li>')
+					.append(product.name)
+					.append(', ')
+					.append(product.description)
+					.append(' (')
+					.append(product.id)
+					.append(')')
+					.append(' ')
+					.append(
+						$('<button>')
+						.text('GET')
+						.click(function(){
+							location.href = "/products/" + product.id;
+						})
+					)
+					.append(' ')
+					.append(
+						$('<button>')
+						.text('Delete')
+						.click(function(){
+							$.ajax({
+								url: '/products/' + product.id,
+								type: 'DELETE'
+							})
+							.always(function(){
+								loadListOfStudents();
+							});
+						})
+					)
+					.append(' ')
+					.append(
+						$('<button>')
+						.text('Update')
+						.click(function(){
+							location.href = "/products/update/" + product.id;
+						})
+					)
+					.appendTo('#products');
+				});
+			});
+    	}
+ 
+    	$(loadListOfStudents);
+    	
+		$('#create-new-product').click(function(){
+			location.href = "/products/create/form";
+		});
+    </script>
